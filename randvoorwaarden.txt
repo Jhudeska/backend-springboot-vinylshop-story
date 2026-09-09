@@ -1,0 +1,294 @@
+Randvoorwaarden
+De opdracht moet voldoen aan de volgende voorwaarden:
+
+minimaal 15 requirements
+minimaal 5 klassen in een klassendiagram
+
+1. Requirements
+Je hebt minimaal 15 requirements nodig. Ik zou ze als volgt verdelen.
+
+Functionele requirements
+Nr.	Requirement	Type
+F1	De applicatie moet albums kunnen toevoegen.	Functioneel
+F2	De applicatie moet albums kunnen bekijken.	Functioneel
+F3	De applicatie moet albums kunnen aanpassen.	Functioneel
+F4	De applicatie moet albums kunnen verwijderen.	Functioneel
+F5	De applicatie moet de naam van een album kunnen opslaan.	Functioneel
+F6	De applicatie moet het jaar van uitgave van een album kunnen opslaan.	Functioneel
+F7	De applicatie moet de prijs van een album kunnen opslaan.	Functioneel
+F8	De applicatie moet een cover van een album kunnen opslaan.	Functioneel
+F9	De applicatie moet kunnen bijhouden welk genre bij een album hoort.	Functioneel
+F10	De applicatie moet kunnen bijhouden welke artiesten bij een album horen.	Functioneel
+F11	De applicatie moet kunnen bijhouden welke publisher een album heeft uitgegeven.	Functioneel
+F12	De applicatie moet albums kunnen zoeken op genre.	Functioneel
+F13	De applicatie moet kunnen tonen welke andere albums een artiest heeft uitgebracht.	Functioneel
+F14	De applicatie moet de voorraad van ieder album kunnen tonen.	Functioneel
+F15	De applicatie moet kunnen bijhouden hoeveel exemplaren van ieder album zijn verkocht.	Functioneel
+F16	De applicatie moet artiesten kunnen toevoegen, bekijken, aanpassen en verwijderen.	Functioneel
+F17	De applicatie moet genres kunnen toevoegen, bekijken, aanpassen en verwijderen.	Functioneel
+F18	De applicatie moet publishers kunnen toevoegen, bekijken, aanpassen en verwijderen.	Functioneel
+
+Je hebt hiermee al ruim meer dan de vereiste 15.
+
+2. Niet-functionele requirements
+Deze eisen gaan niet over wat de applicatie doet, maar bijvoorbeeld over gebruiksgemak, beveiliging en prestaties.
+
+Nr.	Requirement	Type
+NF1	De applicatie moet eenvoudig te gebruiken zijn voor medewerkers zonder technische kennis.	Niet-functioneel
+NF2	Een medewerker moet binnen 3 seconden een album kunnen vinden.	Niet-functioneel
+NF3	De applicatie moet alleen toegankelijk zijn voor geautoriseerde gebruikers.	Niet-functioneel
+NF4	De applicatie moet onderscheid maken tussen gebruikers met verschillende rechten.	Niet-functioneel
+NF5	De applicatie moet gegevens consistent opslaan zodat relaties tussen albums, artiesten, genres en publishers niet verloren gaan.	Niet-functioneel
+NF6	De applicatie moet beschikbaar zijn tijdens de openingstijden van de winkel.	Niet-functioneel
+NF7	De gebruikersinterface moet overzichtelijk zijn en geschikt zijn voor dagelijks gebruik door medewerkers.	Niet-functioneel
+
+Voor jouw opdracht zou ik bijvoorbeeld NF1 t/m NF5 gebruiken. Die zijn duidelijk en goed te verdedigen.
+
+3. Welke klassen heb je nodig?
+Uit de belangrijkste informatie haal je de zelfstandige naamwoorden.
+
+De belangrijkste zijn:
+
+Album
+Artist
+Genre
+Publisher
+Voorraad
+Verkoop
+User/Employee
+Je hebt minimaal 5 klassen nodig. Voor jouw MVP zou ik 6 klassen gebruiken:
+
+Album
+Artist
+Genre
+Publisher
+Inventory
+Employee
+
+Je kunt eventueel Sale toevoegen, maar voor een eenvoudige MVP kun je het aantal verkochte exemplaren ook als attribuut bij Inventory bewaren.
+
+4. Klassen en attributen
+Album
+Album
+----------------------
+- id: int
+- name: String
+- releaseYear: int
+- price: double
+- cover: String
+
+Een album heeft dus:
+
+naam
+jaar van uitgave
+prijs
+cover
+Artist
+Artist
+----------------------
+- id: int
+- name: String
+
+Genre
+Genre
+----------------------
+- id: int
+- name: String
+
+Publisher
+Publisher
+----------------------
+- id: int
+- name: String
+
+Inventory
+Inventory
+----------------------
+- id: int
+- stock: int
+- sold: int
+
+Hiermee kun je bijvoorbeeld zeggen:
+
+Album: Thriller
+Voorraad: 15
+Verkocht: 32
+
+Employee
+Omdat er verschillende rechten moeten zijn:
+
+Employee
+----------------------
+- id: int
+- name: String
+- username: String
+- password: String
+- role: Role
+
+Je zou eventueel Role als zevende klasse kunnen maken:
+
+Role
+----------------------
+- name: String
+
+Maar voor een eenvoudig klassendiagram kun je role ook gewoon als String maken.
+
+5. Relaties
+Dit is het belangrijkste gedeelte van je klassendiagram.
+
+Uit de tekst:
+
+"Een publisher heeft meerdere albums uitgegeven maar een album hoort maar bij één publisher."
+
+Dus:
+
+Publisher 1 -------- 0..* Album
+
+Een publisher kan meerdere albums hebben, maar een album heeft één publisher.
+
+De tekst zegt:
+
+"Een album kan van meerdere artiesten zijn, maar een artiest kan ook meerdere albums hebben uitgebracht."
+
+Dat is een many-to-many relatie:
+
+Artist 0..* -------- 0..* Album
+
+De tekst zegt:
+
+"Een album heeft maar één genre, maar een genre kan bij meerdere albums horen."
+
+Dus:
+
+Genre 1 -------- 0..* Album
+
+Voor voorraad:
+
+Album 1 -------- 1 Inventory
+
+Een album heeft één voorraadregistratie.
+
+6. Klassendiagram
+Je diagram kan er conceptueel zo uitzien:
+
+                  ┌─────────────────┐
+                  │    Publisher    │
+                  ├─────────────────┤
+                  │ - id: int       │
+                  │ - name: String  │
+                  └────────┬────────┘
+                           │
+                         1 │
+                           │ 0..*
+                  ┌────────▼────────┐
+                  │      Album      │
+                  ├─────────────────┤
+                  │ - id: int       │
+                  │ - name: String  │
+                  │ - releaseYear   │
+                  │ - price: double │
+                  │ - cover: String │
+                  └────┬─────┬──────┘
+                       │     │
+                     1 │     │ 0..*
+                       │     │
+                 ┌─────▼──┐  │
+                 │ Genre  │  │
+                 ├────────┤  │
+                 │ id:int │  │
+                 │ name   │  │
+                 └────────┘  │
+                             │
+                       0..*  │
+                  ┌──────────▼──────┐
+                  │      Artist     │
+                  ├─────────────────┤
+                  │ - id: int       │
+                  │ - name: String  │
+                  └─────────────────┘
+
+
+                  ┌─────────────────┐
+                  │    Inventory    │
+                  ├─────────────────┤
+                  │ - id: int       │
+                  │ - stock: int    │
+                  │ - sold: int     │
+                  └────────┬────────┘
+                           │
+                         1 │
+                           │ 1
+                      ┌────▼────┐
+                      │  Album  │
+                      └─────────┘
+
+
+                  ┌─────────────────┐
+                  │    Employee     │
+                  ├─────────────────┤
+                  │ - id: int       │
+                  │ - name: String  │
+                  │ - username      │
+                  │ - password      │
+                  │ - role: String  │
+                  └─────────────────┘
+
+Bij een echt UML-diagram zou je de dubbele Album natuurlijk niet tekenen; je tekent één Album en verbindt daar alle relaties aan.
+
+7. Nog beter: UML-versie
+Als je bijvoorbeeld PlantUML gebruikt, kun je het veel makkelijker tekenen:
+
+@startuml
+
+class Album {
+    - id: int
+    - name: String
+    - releaseYear: int
+    - price: double
+    - cover: String
+}
+
+class Artist {
+    - id: int
+    - name: String
+}
+
+class Genre {
+    - id: int
+    - name: String
+}
+
+class Publisher {
+    - id: int
+    - name: String
+}
+
+class Inventory {
+    - id: int
+    - stock: int
+    - sold: int
+}
+
+class Employee {
+    - id: int
+    - name: String
+    - username: String
+    - password: String
+    - role: String
+}
+
+Publisher "1" -- "0..*" Album
+Genre "1" -- "0..*" Album
+Artist "0..*" -- "0..*" Album
+Album "1" -- "1" Inventory
+
+@enduml
+
+Let vooral op deze vier relaties
+Publisher 1  ───────  0..* Album
+
+Genre     1  ───────  0..* Album
+
+Artist    0..* ────── 0..* Album
+
+Album     1  ──────── 1 Inventory
